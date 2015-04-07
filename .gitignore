@@ -7,3 +7,7 @@
 
 # Ignore any tmp file
 *~
+
+# Ignore any input/output file
+*.in
+*.out
