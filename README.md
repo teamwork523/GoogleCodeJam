@@ -1,0 +1,2 @@
+# GoogleCodeJam
+GCJ practices
