@@ -1,2 +1,1 @@
-# GoogleCodeJam
-GCJ practices
+# Google Code Jam Practice
