@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 
@@ -12,24 +13,51 @@ public class Main implements Runnable {
 	
 	///////////////////////
 	// File name variables
-	final String problem = "A";
-	// final String problem = "B"; 
+	//final String problem = "A";
+	 final String problem = "B"; 
 	
 	// final String filename = problem + "-sample";
 
 	//final String filename = problem + "-small-attempt0";
-	final String filename = problem + "-small-practice";
+	//final String filename = problem + "-small-practice";
+	final String filename = problem + "-large-practice";
 	// final String filename= problem+"-small-attempt1";
 	// final String filename= problem+"-large";
 	
 	// Output Float format
 	// e.g. out.write(df.format(T0));
-	//DecimalFormat df = new DecimalFormat("0.000000");
+	DecimalFormat df = new DecimalFormat("0.0000000");
 	
 	//////////////////////////////////////////
 	// Hard core function
 	public void solve() throws Exception {
-				
+//		double C = dread(), F = dread(), X = dread();
+//		double factor = 2.0;
+//		
+//		if (C >= X) {
+//			out.write(df.format( X / factor ));
+//		} else {
+//			double increaseBaseTime = 0.0, delta = 0.0, oldTime, newTime;
+//			do {
+//				oldTime = increaseBaseTime + X / factor;
+//				delta = C / factor;
+//				factor += F;
+//				increaseBaseTime += delta;
+//				newTime = increaseBaseTime + X / factor;
+//			} while (oldTime > newTime);
+//			out.write(df.format( oldTime ));
+//		}
+		double C = dread(), F = dread(), X = dread();
+
+		double speed = 2.0;
+		double T0 = 0;
+		while (C / F < (X - C) / speed) {
+			T0 += C / speed;
+			speed += F;
+		}
+
+		T0 += X / speed;
+		out.write(df.format(T0));
 	}
 	
 	
