@@ -1,0 +1,183 @@
+///////////////////////////////
+// Qualification Round
+
+// Problem A
+public void solve() throws Exception {
+    int maxShyness = iread() + 1;
+    String shyList = readword();
+    
+    // Convert shyness list into an array
+    int curShynessLevelCount = 0;
+    int totalPeopleRequired = 0, totalSoFar = 0;
+    
+    for (int i = 0; i < maxShyness; i++) {
+        curShynessLevelCount = Character.getNumericValue(shyList.charAt(i));
+        if (curShynessLevelCount > 0) {
+            if (totalSoFar < i) {
+                totalPeopleRequired += i - totalSoFar;
+                // reset the totalSoFar
+                totalSoFar = i;
+            }
+        }
+        totalSoFar += curShynessLevelCount;
+    }
+    
+    out.write(totalPeopleRequired + "");
+}
+
+// Problem B
+
+// Problem C
+public class Unit {
+    // + is true, - is false
+    int sign;
+    Character value;
+    /**
+     * @param sign
+     * @param value
+     */
+    public Unit(int sign, Character value) {
+        super();
+        this.sign = sign;
+        this.value = value;
+    }
+    
+    public boolean equals(Unit anotherUnit) {
+        return (this.sign == anotherUnit.sign) && (this.value.equals(anotherUnit.value));
+    }
+    
+    public Unit() {}
+}
+
+// implement the Rule
+private Unit multiple(Unit a, Unit b) {
+    
+    int iSign = a.sign * b.sign;
+    
+    if (a.value.equals('1')) {
+        return new Unit(iSign, b.value);
+    } else if (b.value.equals('1')) {
+        return new Unit(iSign, a.value);
+    } else if (a.value.equals(b.value)) {
+        return new Unit(iSign * -1, '1');
+    } else {
+        if (a.value.equals('i') && b.value.equals('j')) {
+            // i * j = k
+            return new Unit(iSign, 'k');
+        } else if (a.value.equals('i') && b.value.equals('k')) {
+            // i * k = -j
+            return new Unit(iSign * -1, 'j');
+        } else if (a.value.equals('j') && b.value.equals('i')) {
+            // j * i = -k
+            return new Unit(iSign * -1, 'k');
+        } else if (a.value.equals('j') && b.value.equals('k')) {
+            // j * k = i
+            return new Unit(iSign, 'i');
+        } else if (a.value.equals('k') && b.value.equals('i')) {
+            // k * i = j
+            return new Unit(iSign, 'j');
+        } else if (a.value.equals('k') && b.value.equals('j')) {
+            // k * j = -i
+            return new Unit(iSign * -1, 'i');
+        }
+    }
+    return null;
+}
+
+public void solve() throws Exception {
+    //int L = iread(), X = iread();
+    int L = iread();
+    Long X = lread();
+    String input = readword();
+    StringBuilder totalLine = new StringBuilder();
+    
+    for (Long i = (long) 0; i < X; i++) {
+        totalLine.append(input);
+    }
+    
+    input = totalLine.toString();
+    
+    // Special case
+    if (input.length() < 3) {
+        out.write("NO");
+        return;
+    }
+    
+    // Looking for i
+    int curPosition = 0;
+    Unit privUnit = new Unit(1, '1'),
+         iUnit = new Unit(1, 'i'),
+         jUnit = new Unit(1, 'j'),
+         kUnit = new Unit(1, 'k'),
+         oneUnit = new Unit(1, '1');
+    Unit curUnit = new Unit();
+    boolean iFound = false, jFound = false, kFound = false, oneFound = false;
+    for (; curPosition < input.length() ; curPosition++ ) {
+        curUnit = multiple(privUnit, new Unit(1, input.charAt(curPosition)));
+        privUnit = curUnit;
+        if (curUnit.equals(iUnit)) {
+            iFound = true;
+            curPosition++;
+            // reset privous unit
+            privUnit = oneUnit;
+            break;
+        }
+    }
+    if (iFound == false) {
+        out.write("NO");
+        return;
+    }
+    
+    // Looking for j
+    for (; curPosition < input.length() ; curPosition++ ) {
+        curUnit = multiple(privUnit, new Unit(1, input.charAt(curPosition)));
+        privUnit = curUnit;
+        if (curUnit.equals(jUnit)) {
+            jFound = true;
+            curPosition++;
+            // reset privous unit
+            privUnit = oneUnit;
+            break;
+        }
+    }
+    if (jFound == false) {
+        out.write("NO");
+        return;
+    }
+    
+    // Looking for k
+    for (; curPosition < input.length() ; curPosition++ ) {
+        curUnit = multiple(privUnit, new Unit(1, input.charAt(curPosition)));
+        privUnit = curUnit;
+        if (curUnit.equals(kUnit)) {
+            kFound = true;
+            curPosition++;
+            // reset privous unit
+            privUnit = oneUnit;
+            break;
+        }
+    }
+    if (kFound == false) {
+        out.write("NO");
+        return;
+    }
+    
+    if (curPosition == input.length()) {
+        out.write("YES");
+        return;
+    }
+    
+    // Wrap up the rest
+    for (; curPosition < input.length() ; curPosition++ ) {
+        curUnit = multiple(privUnit, new Unit(1, input.charAt(curPosition)));
+        privUnit = curUnit;
+    }
+    if (curUnit.equals(oneUnit)) {
+        out.write("YES");
+    } else {
+        out.write("NO");
+    }
+}
+
+
+// Problem D
