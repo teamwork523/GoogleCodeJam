@@ -1,0 +1,38 @@
+///////////////////////////////
+// Round 1A
+
+// Problem A
+int numInputs = iread();
+int[] inputList = new int[numInputs];
+
+for (int i = 0; i < numInputs; i++) {
+	inputList[i] = iread();
+}
+
+// Compute for method one
+int totalEatenInMethodOne = 0, maxDiff = 0;
+for (int i = 1; i < numInputs; i++) {
+	if (inputList[i] < inputList[i-1]) {
+		totalEatenInMethodOne += inputList[i-1] - inputList[i];
+		if (inputList[i-1] - inputList[i] > maxDiff) {
+			maxDiff = inputList[i-1] - inputList[i];
+		}
+	}
+}
+
+// Computer for method two
+int totalEatenInMethodTwo = 0;
+for (int i = 0; i < numInputs - 1; i++) {
+	if (inputList[i] < maxDiff) {
+		totalEatenInMethodTwo += inputList[i];
+	} else {
+		totalEatenInMethodTwo += maxDiff;
+	}
+}
+
+out.write(totalEatenInMethodOne + " " + totalEatenInMethodTwo);
+
+// Problem B
+
+// Problem C
+

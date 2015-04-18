@@ -9,14 +9,14 @@ public class gcj implements Runnable {
 	
 	///////////////////////
 	// File name variables
-	final String problem = "D";
+	final String problem = "B";
 	
 	// final String filename = problem + "-sample";
 
-	//final String filename = problem + "-small-attempt0";
+	//final String filename = problem + "-small-attempt1";
 
-	final String filename= problem+"-small-attempt3";
-	//final String filename= problem+"-large";
+	//final String filename= problem+"-small-attempt3";
+	final String filename= problem+"-large";
 	
 	// Output Float format
 	// e.g. out.write(df.format(T0));
@@ -25,42 +25,91 @@ public class gcj implements Runnable {
 	//////////////////////////////////////////
 	// Hard core function
 	public void solve() throws Exception {
-		int X = iread(), R = iread(), C = iread();
-		String playerLose = "RICHARD", playerWin = "GABRIEL"; 
+		int numBarber = iread(), position = iread();
 		
-		if (X == 1) {
-			out.write(playerWin);
-			return;
-		}
+		long maxBarbarTime = 0;
+		long[] barberTimeArray = new long[numBarber];
 		
-		// Filled with holes
-		if ((R * C) % X != 0 || (R * C) < X) {
-			out.write(playerLose);
-			return;
-		}
-		
-//		if (X == 2) {
-//			out.write(playerWin);
-//			return;
-//		}
-		
-		if ((R == 1 || C == 1) && X > 2) {
-			out.write(playerLose);
-			return;
-		}
-
-		if (X == 4) {
-			if ((R == 3 && C == 4) || (R == 4 && C == 3) || (R == 4 && C == 4)) {
-				out.write(playerWin);
-				return;
+		for (int i = 0; i < numBarber; i++) {
+			barberTimeArray[i] = iread();
+			if (barberTimeArray[i] > maxBarbarTime) {
+				maxBarbarTime = barberTimeArray[i];
 			}
-			out.write(playerLose);
+		}
+		
+		// corner case check
+		if (position <= numBarber) {
+			out.write(position + "");
 			return;
 		}
 		
-		out.write(playerWin);
+		
+		long maxTotalTime = (long) (maxBarbarTime * Math.max(0, position - numBarber));
+		long curMax = maxTotalTime, curLow = 0, mid = -1;
+		Result result = new Result(0, 0);
+		
+		do {
+			mid = (curMax - curLow) / 2 + curLow;
+			result = calFinishedPerson(mid, barberTimeArray);
+			if ((position > result.maxNumPeopleFinished - result.overlappedCount && 
+			    position <= result.maxNumPeopleFinished) || (position == result.maxNumPeopleFinished)) {
+				break;
+			} else if (position > result.maxNumPeopleFinished) {
+				curLow = mid + 1;
+			} else {
+				curMax = mid - 1;
+			}
+			
+		} while (true);
+		
+		// Then approach to the finish point
+		if (result.overlappedCount == 0 && mid > 0) {
+			long timeFinished = 0;
+			for (int i = 0; i < numBarber; i++) {
+				if (timeFinished < ((mid / barberTimeArray[i]) * barberTimeArray[i])) {
+					timeFinished = mid / barberTimeArray[i] * barberTimeArray[i];
+				}
+			}
+			mid = timeFinished;
+			// update the result again
+			result = calFinishedPerson(mid, barberTimeArray);
+		}
+		
+		long actualPosition = result.maxNumPeopleFinished - result.overlappedCount + 1;
+		for (int i = 0; i < numBarber; i++) {
+			if (mid % barberTimeArray[i] == 0) {
+				if (actualPosition == position) {
+					out.write((i+1) + "");
+					return;
+				}
+				actualPosition++;
+			}
+		}
 	}
 	
+	// Helper object
+	public class Result {
+		public Result(long maxNumPeopleFinished, long overlappedCount) {
+			this.maxNumPeopleFinished = maxNumPeopleFinished;
+			this.overlappedCount = overlappedCount;
+		}
+		public long maxNumPeopleFinished = 0;
+		public long overlappedCount = 0;
+	}
+	
+	// Calculate the number of people finished at a certain time
+	private Result calFinishedPerson(long curTime, long[] barberTimeArray) {
+		long maxNumPeopleFinished = 0, overlappedCount = 0;
+		
+		for (int i = 0; i < barberTimeArray.length; i++) {
+			if (curTime % barberTimeArray[i] == 0) {
+				overlappedCount++;
+			}
+			maxNumPeopleFinished += curTime / barberTimeArray[i] + 1;
+		}
+		
+		return new Result(maxNumPeopleFinished, overlappedCount);
+	}
 	
 	//////////////////////////////////////////
 	/// Helper functions
