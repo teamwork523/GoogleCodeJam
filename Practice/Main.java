@@ -31,33 +31,7 @@ public class Main implements Runnable {
 	//////////////////////////////////////////
 	// Hard core function
 	public void solve() throws Exception {
-//		double C = dread(), F = dread(), X = dread();
-//		double factor = 2.0;
-//		
-//		if (C >= X) {
-//			out.write(df.format( X / factor ));
-//		} else {
-//			double increaseBaseTime = 0.0, delta = 0.0, oldTime, newTime;
-//			do {
-//				oldTime = increaseBaseTime + X / factor;
-//				delta = C / factor;
-//				factor += F;
-//				increaseBaseTime += delta;
-//				newTime = increaseBaseTime + X / factor;
-//			} while (oldTime > newTime);
-//			out.write(df.format( oldTime ));
-//		}
-		double C = dread(), F = dread(), X = dread();
 
-		double speed = 2.0;
-		double T0 = 0;
-		while (C / F < (X - C) / speed) {
-			T0 += C / speed;
-			speed += F;
-		}
-
-		T0 += X / speed;
-		out.write(df.format(T0));
 	}
 	
 	
@@ -75,12 +49,12 @@ public class Main implements Runnable {
 	public void run() {
 		try {
 			// Helper in-&-out for local test
-			//in = new BufferedReader(new InputStreamReader(System.in));
-			//out = new BufferedWriter(new OutputStreamWriter(System.out));
+			in = new BufferedReader(new InputStreamReader(System.in));
+			out = new BufferedWriter(new OutputStreamWriter(System.out));
 			
 			// For real file input and output
-			in = new BufferedReader(new FileReader(filename + ".in"));
-			out = new BufferedWriter(new FileWriter(filename + ".out"));
+//			in = new BufferedReader(new FileReader(filename + ".in"));
+//			out = new BufferedWriter(new FileWriter(filename + ".out"));
 			solve_gcj();
 			out.flush();
 		} catch (Exception e) {

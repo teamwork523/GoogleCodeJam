@@ -11,3 +11,10 @@
 # Ignore any input/output file
 *.in
 *.out
+
+#intellij
+.idea/
+*.iml
+*.ipr
+*.iws
+*/out/*
