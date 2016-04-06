@@ -36,34 +36,6 @@ public class Main implements Runnable {
     //////////////////////////////////////////
     // Hard core function
     public void solve() throws Exception {
-        long maxLen = lread();
-        for (long i = 0; i <= maxLen; i++) {
-            maxDeletedLen.put(i, maxLen + 1);
-        }
-        maxDeletedLen.put(0L, 0L);
-        for (long i = 0; i < maxLen; i++) {
-            long cur = maxDeletedLen.get(i) + 1;
-            maxDeletedLen.put(i + 1, Math.min(maxDeletedLen.get(i+1), cur));
-            long rev = reverse(i);
-            if (rev <= maxLen) {
-                maxDeletedLen.put(rev, Math.min(maxDeletedLen.get(rev), cur));
-            }
-        }
-        out.write(String.valueOf(maxDeletedLen.get(maxLen)));
-    }
-
-    private long reverse(long number)
-    {
-        long result = 0;
-        long remainder;
-        while (number > 0)
-        {
-            remainder = number % 10;
-            number = number / 10;
-            result = result * 10 + remainder;
-        }
-
-        return result;
     }
 
     //////////////////////////////////////////
@@ -81,12 +53,12 @@ public class Main implements Runnable {
     public void run() {
         try {
             // Helper in-&-out for local test
-//            in = new BufferedReader(new InputStreamReader(System.in));
-//            out = new BufferedWriter(new OutputStreamWriter(System.out));
+            in = new BufferedReader(new InputStreamReader(System.in));
+            out = new BufferedWriter(new OutputStreamWriter(System.out));
 
             // For real file input and output
-            in = new BufferedReader(new FileReader(filename + ".in"));
-            out = new BufferedWriter(new FileWriter(filename + ".out"));
+//            in = new BufferedReader(new FileReader(filename + ".in"));
+//            out = new BufferedWriter(new FileWriter(filename + ".out"));
             solve_gcj();
             out.flush();
         } catch (Exception e) {
