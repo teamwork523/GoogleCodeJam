@@ -15,63 +15,77 @@ public class Main implements Runnable {
 
     ///////////////////////
     // File name variables
-//    final String problem = "A";
+    final String problem = "A";
 //    final String problem = "B";
 //    final String problem = "C";
-    final String problem = "D";
 
     // final String filename = problem + "-sample";
 
-    final String filename = problem + "-small-attempt0";
+//    final String filename = problem + "-small-attempt0";
 //    final String filename = problem + "-small-practice";
 //    final String filename = problem + "-large-practice";
-//     final String filename= problem+"-small-attempt1";
-//     final String filename= problem+"-large";
+    // final String filename= problem+"-small-attempt1";
+     final String filename= problem+"-large";
 
     // Output Float format
     // e.g. out.write(df.format(T0));
     DecimalFormat df = new DecimalFormat("0.0000000");
 
     // Helper object
-    static int MAX = (int)Math.pow(2.0, 17.0);
-    HashMap<Integer, Boolean> primeMap = new HashMap<Integer, Boolean>();
-    int[] primeNums = new int[MAX];
+    HashMap<Long, Long> maxDeletedLen = new HashMap<Long, Long>();
 
     //////////////////////////////////////////
     // Hard core function
     public void solve() throws Exception {
-        int K = iread(), C = iread(), S = iread();
-        if (K == 1) {
-            out.write("1");
+        int N = iread();
+
+        if (N == 0) {
+            out.write("INSOMNIA");
             return;
         }
-        long maxNum = calPower(K, C);
-        long perShare = (maxNum - 1) / (K - 1);
-        long curShare = 1;
-        out.write("1 ");
-        for (int i = 0; i < K - 1; i++) {
-            curShare += perShare;
-            out.write(curShare + " ");
+
+        boolean [] testArray = new boolean[10];
+        Arrays.fill(testArray, false);
+
+        int result = 1;
+        long current;
+
+        do {
+            current = result * N;
+            for (int j = 0; j < 10; j++) {
+                String temp = String.valueOf(current);
+                if (temp.indexOf((char) j + '0') != -1) {
+                    testArray[j] = true;
+                }
+            }
+            result++;
+        } while(!isFinished(testArray) && result < Integer.MAX_VALUE);
+
+        if (result == Integer.MAX_VALUE) {
+            out.write("INSOMNIA");
+        } else {
+            out.write(String.valueOf((result-1) * N));
         }
     }
 
-    private long calPower(int K, int C) {
-        long result = 1;
-        for (int i = 0; i < C; i++) {
-            result *= K;
+    private boolean isFinished(boolean[] testArray) {
+        for (int i = 0; i < 10; i++) {
+            if (testArray[i] == false) {
+                return false;
+            }
         }
-        return result;
+        return true;
     }
 
     //////////////////////////////////////////
     /// Helper functions
     public void solve_gcj() throws Exception {
-
         int tests = iread();
         for (int test = 1; test <= tests; test++) {
             out.write("Case #" + test + ": ");
             solve();
             out.write("\n");
+            out.flush();
         }
     }
 
@@ -134,5 +148,3 @@ public class Main implements Runnable {
         new Thread(new Main()).start();
     }
 }
-
-

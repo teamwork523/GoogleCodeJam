@@ -17,8 +17,7 @@ public class Main implements Runnable {
     // File name variables
 //    final String problem = "A";
 //    final String problem = "B";
-//    final String problem = "C";
-    final String problem = "D";
+    final String problem = "C";
 
     // final String filename = problem + "-sample";
 
@@ -33,39 +32,91 @@ public class Main implements Runnable {
     DecimalFormat df = new DecimalFormat("0.0000000");
 
     // Helper object
-    static int MAX = (int)Math.pow(2.0, 17.0);
+    static int MAX = (int)Math.pow(2.0, 20.0);
     HashMap<Integer, Boolean> primeMap = new HashMap<Integer, Boolean>();
     int[] primeNums = new int[MAX];
 
     //////////////////////////////////////////
     // Hard core function
     public void solve() throws Exception {
-        int K = iread(), C = iread(), S = iread();
-        if (K == 1) {
-            out.write("1");
-            return;
-        }
-        long maxNum = calPower(K, C);
-        long perShare = (maxNum - 1) / (K - 1);
-        long curShare = 1;
-        out.write("1 ");
-        for (int i = 0; i < K - 1; i++) {
-            curShare += perShare;
-            out.write(curShare + " ");
+        out.write("\n");
+        int N = iread(), J = iread();
+
+        int countPrinted = 0, minN = (int)Math.pow(2, N-1) + 1, maxN = (int)Math.pow(2, N) - 1;
+
+        int curCase = 0;
+
+        for (int i = minN; i < maxN; i = i+2) {
+            String binaryString = Integer.toBinaryString(i);
+            String output = binaryString + " ";
+            boolean validateCase = true;
+            for (int baseNum = 2; baseNum <= 10; baseNum++) {
+                long curNum = convertBinaryToDigital(binaryString, baseNum);
+                int primeNum = primeDivider(curNum);
+                if (primeNum == -1) {
+                    validateCase = false;
+                    break;
+                }
+                output += primeNum + " ";
+            }
+            if (validateCase) {
+                curCase++;
+                out.write(output.substring(0, output.length() -1) + "\n");
+            }
+            if (curCase >= J) {
+                return;
+            }
         }
     }
 
-    private long calPower(int K, int C) {
-        long result = 1;
-        for (int i = 0; i < C; i++) {
-            result *= K;
+    private int primeDivider(long n) {
+        for (int i = 0; i < MAX; i++) {
+            if (primeNums[i] == 0) break;
+            if (n / primeNums[i] != 1 && n / primeNums[i] * primeNums[i] == n) {
+                return primeNums[i];
+            }
         }
-        return result;
+        return -1;
+    }
+
+    private long convertBinaryToDigital(String binaryStr, int base) {
+        long ret = 0;
+        long curBase = 1;
+
+        for(int i=binaryStr.length()-1;i>=0;--i){
+            ret += curBase * Integer.valueOf(binaryStr.charAt(i)-'0');
+            curBase *= base;
+        }
+        return ret;
+    }
+
+    private void initPrimeMap() {
+
+        for (int i = 2; i < MAX; i++) {
+            primeMap.put(i, true);
+        }
+        for (int i = 2; i * i < MAX; i++) {
+            for (int j = i; i * j < MAX; j++) {
+                primeMap.put(i * j, false);
+            }
+        }
+        int cur = 0;
+        for (int i = 2; i < MAX; i++) {
+            if (primeMap.get(i) == true) {
+                primeNums[cur] = i;
+                cur++;
+            }
+        }
     }
 
     //////////////////////////////////////////
     /// Helper functions
     public void solve_gcj() throws Exception {
+
+        // Inital function
+        initPrimeMap();
+        long testResult = convertBinaryToDigital("1000000010111011", 3);
+        System.out.println("test result is " + testResult);
 
         int tests = iread();
         for (int test = 1; test <= tests; test++) {
@@ -78,12 +129,12 @@ public class Main implements Runnable {
     public void run() {
         try {
             // Helper in-&-out for local test
-//            in = new BufferedReader(new InputStreamReader(System.in));
-//            out = new BufferedWriter(new OutputStreamWriter(System.out));
+            in = new BufferedReader(new InputStreamReader(System.in));
+            out = new BufferedWriter(new OutputStreamWriter(System.out));
 
             // For real file input and output
-            in = new BufferedReader(new FileReader(filename + ".in"));
-            out = new BufferedWriter(new FileWriter(filename + ".out"));
+//            in = new BufferedReader(new FileReader(filename + ".in"));
+//            out = new BufferedWriter(new FileWriter(filename + ".out"));
             solve_gcj();
             out.flush();
         } catch (Exception e) {
@@ -134,5 +185,3 @@ public class Main implements Runnable {
         new Thread(new Main()).start();
     }
 }
-
-

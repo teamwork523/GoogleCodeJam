@@ -16,57 +16,62 @@ public class Main implements Runnable {
     ///////////////////////
     // File name variables
 //    final String problem = "A";
-//    final String problem = "B";
+    final String problem = "B";
 //    final String problem = "C";
-    final String problem = "D";
 
     // final String filename = problem + "-sample";
 
-    final String filename = problem + "-small-attempt0";
+//    final String filename = problem + "-small-attempt0";
 //    final String filename = problem + "-small-practice";
 //    final String filename = problem + "-large-practice";
 //     final String filename= problem+"-small-attempt1";
-//     final String filename= problem+"-large";
+     final String filename= problem+"-large";
 
     // Output Float format
     // e.g. out.write(df.format(T0));
     DecimalFormat df = new DecimalFormat("0.0000000");
 
     // Helper object
-    static int MAX = (int)Math.pow(2.0, 17.0);
-    HashMap<Integer, Boolean> primeMap = new HashMap<Integer, Boolean>();
-    int[] primeNums = new int[MAX];
+    HashMap<Long, Long> maxDeletedLen = new HashMap<Long, Long>();
 
     //////////////////////////////////////////
     // Hard core function
     public void solve() throws Exception {
-        int K = iread(), C = iread(), S = iread();
-        if (K == 1) {
-            out.write("1");
+        String S = readword();
+
+        if (S.length() == 1) {
+            if (S.equals("+")) {
+                out.write("0");
+            } else {
+                out.write("1");
+            }
             return;
         }
-        long maxNum = calPower(K, C);
-        long perShare = (maxNum - 1) / (K - 1);
-        long curShare = 1;
-        out.write("1 ");
-        for (int i = 0; i < K - 1; i++) {
-            curShare += perShare;
-            out.write(curShare + " ");
-        }
-    }
 
-    private long calPower(int K, int C) {
-        long result = 1;
-        for (int i = 0; i < C; i++) {
-            result *= K;
+        int plusMin = 0, minusMin = 0;
+        if (S.charAt(0) == '+') {
+            minusMin = 1;
+        } else {
+            plusMin = 1;
         }
-        return result;
+
+        for (int i = 1; i < S.length(); i++) {
+            int prevPlus = plusMin, prevMinus = minusMin;
+            if (S.charAt(i) == '+') {
+                plusMin = Math.min(prevPlus, prevMinus + 1);
+                minusMin = Math.min(prevPlus + 1, prevMinus + 2);
+            } else {
+                plusMin = Math.min(prevPlus + 2, prevMinus + 1);
+                minusMin = Math.min(prevPlus + 1, prevMinus);
+            }
+        }
+
+        out.write(String.valueOf(Math.min(plusMin, minusMin + 1)));
     }
 
     //////////////////////////////////////////
     /// Helper functions
     public void solve_gcj() throws Exception {
-
         int tests = iread();
         for (int test = 1; test <= tests; test++) {
             out.write("Case #" + test + ": ");
@@ -134,5 +139,3 @@ public class Main implements Runnable {
         new Thread(new Main()).start();
     }
 }
-
-
