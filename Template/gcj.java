@@ -89,6 +89,17 @@ public class gcj implements Runnable {
 		return b.toString();
 	}
 
+	public String readLine() throws IOException {
+        StringBuilder b = new StringBuilder();
+        int c;
+        c = in.read();
+        while (c != '\n') {
+            b.append((char) c);
+            c = in.read();
+        }
+        return b.toString();
+    }
+
 	/////////////////////////
 	// Main Function
 	public static void main(String[] args) {
