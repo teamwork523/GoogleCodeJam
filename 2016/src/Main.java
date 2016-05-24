@@ -20,11 +20,11 @@ public class Main implements Runnable {
 
     // final String filename = problem + "-sample";
 
-//    final String filename = problem + "-small-attempt0";
+    final String filename = problem + "-small-attempt0";
 //    final String filename = problem + "-small-practice";
 //    final String filename = problem + "-large-practice";
 //     final String filename= problem+"-small-attempt1";
-     final String filename= problem+"-large";
+//     final String filename= problem+"-large";
 
     // Output Float format
     // e.g. out.write(df.format(T0));
@@ -33,75 +33,57 @@ public class Main implements Runnable {
     //////////////////////////////////////////
     // Hard core function
     public void solve() throws Exception {
-        int totalline = iread();
-        String [] bffSplitted = readLine().split(" ");
-
-        HashMap<Integer, Integer> bffMap = new HashMap<Integer, Integer>();
-        HashMap<Integer, Integer> ringCountMap = new HashMap<Integer, Integer>();
-        for (int i = 1; i <= bffSplitted.length; i++) {
-            bffMap.put(i, Integer.valueOf(bffSplitted[i-1]));
-        }
-
-//        System.out.println(bffMap);
-
-        // find the inter pointing loop
-        for (int i = 1; i <= bffSplitted.length; i++) {
-            if (bffMap.get(bffMap.get(i)).equals(i)) {
-                ringCountMap.put(i, 0);
-                ringCountMap.put(bffMap.get(i), 0);
+        String s = readLine();
+        HashMap<String,Integer> map = new HashMap<String,Integer>();
+        for(int i=0;i<s.length();i++){
+            if(!map.containsKey(String.valueOf(s.charAt(i))))
+                map.put(String.valueOf(s.charAt(i)),1);
+            else{
+                int num = map.get(String.valueOf(s.charAt(i)));
+                map.put(String.valueOf(s.charAt(i)), num + 1);
             }
         }
+        HashMap<String,String> numCode = new HashMap<String,String>();
+        numCode.put("Z", "ZERO");
+        numCode.put("G", "EIGHT");
+        numCode.put("W", "TWO");
+        numCode.put("X", "SIX");
+        numCode.put("O", "ONE");
+        numCode.put("V", "SEVEN");
+        numCode.put("I", "NINE");
+        numCode.put("F", "FIVE");
+        numCode.put("R", "THREE");
+        numCode.put("U", "FOUR");
+        HashMap<String,Integer> numRef = new HashMap<String,Integer>();
+        numRef.put("Z", 0);
+        numRef.put("G", 8);
+        numRef.put("W", 2);
+        numRef.put("X", 6);
+        numRef.put("O", 1);
+        numRef.put("V", 7);
+        numRef.put("I", 9);
+        numRef.put("F", 5);
+        numRef.put("R", 3);
+        numRef.put("U", 4);
+        ArrayList<Integer> ret= new ArrayList<Integer>();
+        String [] logicOrder = {"X","Z","G","U","W","F","I","R","O","V"};
+        for(int i=0;i<logicOrder.length;i++){
 
-//        System.out.println(ringCountMap);
-
-        int singleChainMax = 1;
-
-        for (int i = 1; i <= bffSplitted.length; i++) {
-            if (ringCountMap.containsKey(i)) {
-                continue;
-            }
-
-            Integer curInt = i;
-            HashSet<Integer> curChainSet = new HashSet<Integer>();
-            curChainSet.add(curInt);
-            while (!curChainSet.contains(bffMap.get(curInt)) && !ringCountMap.containsKey(bffMap.get(curInt))) {
-
-//                System.out.println(curInt);
-
-                curInt = bffMap.get(curInt);
-                curChainSet.add(curInt);
-            }
-
-//            System.out.println("Final int is " + curInt);
-//            System.out.println(curChainSet);
-
-            if (bffMap.get(curInt).equals(i) && curChainSet.size() > singleChainMax) {
-                singleChainMax = curChainSet.size();
-            }
-            if (ringCountMap.containsKey(bffMap.get(curInt))) {
-                if (curChainSet.size() > ringCountMap.get(bffMap.get(curInt))) {
-                    ringCountMap.put(bffMap.get(curInt), curChainSet.size());
+            while(map.containsKey(logicOrder[i])&&map.get(logicOrder[i])>0){
+                for (int j = 0; j < numCode.get(logicOrder[i]).length(); j++) {
+                    int count = map.get(String.valueOf(numCode.get(logicOrder[i]).charAt(j))) - 1;
+                    map.put(String.valueOf(numCode.get(logicOrder[i]).charAt(j)), count);
                 }
+                ret.add(numRef.get(logicOrder[i]));
             }
-        }
 
-        // compare single chain and chain plus ring
-        int chainRingSize = 0;
-        if (ringCountMap.size() > 0) {
-            int valueSum = 0;
-            Iterator it = ringCountMap.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<Integer, Integer> pair = (Map.Entry<Integer, Integer>)it.next();
-                valueSum += pair.getValue();
-            }
-            chainRingSize = valueSum + ringCountMap.size();
         }
-
-        if (singleChainMax > chainRingSize) {
-            out.write(String.valueOf(singleChainMax));
-        } else {
-            out.write(String.valueOf(chainRingSize));
+        Collections.sort(ret);
+        StringBuilder st = new StringBuilder();
+        for(Integer i: ret) {
+            st.append(String.valueOf(i));
         }
+        out.write(st.toString());
     }
 
 //    private long calPower(int K, int C) {
@@ -127,12 +109,12 @@ public class Main implements Runnable {
     public void run() {
         try {
 //            // Helper in-&-out for local test
-//            in = new BufferedReader(new InputStreamReader(System.in));
-//            out = new BufferedWriter(new OutputStreamWriter(System.out));
+            in = new BufferedReader(new InputStreamReader(System.in));
+            out = new BufferedWriter(new OutputStreamWriter(System.out));
 
             // For real file input and output
-            in = new BufferedReader(new FileReader(filename + ".in"));
-            out = new BufferedWriter(new FileWriter(filename + ".out"));
+//            in = new BufferedReader(new FileReader(filename + ".in"));
+//            out = new BufferedWriter(new FileWriter(filename + ".out"));
             solve_gcj();
             out.flush();
         } catch (Exception e) {
