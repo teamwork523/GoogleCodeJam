@@ -34,7 +34,64 @@ public class Main implements Runnable {
     //////////////////////////////////////////
     // Hard core function
     public void solve() throws Exception {
-        out.write("");
+        int N = iread(), R = iread(), P = iread(), S = iread();
+        boolean possible = false;
+        if (N % 2 == 0) {
+            int oddNumber = (calPower(2, N) - 1) / 3;
+            int evenNumber = oddNumber + 1;
+            possible = isPossible(oddNumber, evenNumber, R, P, S);
+        } else {
+            int oddNumber = (calPower(2, N) + 1) / 3;
+            int evenNumber = oddNumber - 1;
+            possible = isPossible(oddNumber, evenNumber, R, P, S);
+        }
+
+        if (!possible) {
+            out.write("IMPOSSIBLE");
+            return;
+        }
+
+        String result = divdeAndMergePrinter(N , R, P, S);
+        out.write(result);
+    }
+
+    private String divdeAndMergePrinter(int N, int R, int P, int S) {
+        if (N == 1) {
+            if (R == 0) {
+                return "PS";
+            } else if (P == 0) {
+                return "RS";
+            } else {
+                return "PR";
+            }
+        }
+
+        String left = "", right = "";
+        if (N % 2 == 0) {
+            if (R % 2 == 0) {
+                left = divdeAndMergePrinter(N - 1, R / 2, R / 2, R / 2 - 1);
+                right = divdeAndMergePrinter(N - 1, R / 2, R / 2 - 1, R / 2);
+            } else if (P % 2 == 0) {
+                left = divdeAndMergePrinter(N - 1, P / 2 -1 , P / 2, P / 2);
+                right = divdeAndMergePrinter(N - 1, P / 2, P / 2, P / 2 - 1);
+            } else {
+                left = divdeAndMergePrinter(N - 1, S / 2 -1 , S / 2, S / 2);
+                right = divdeAndMergePrinter(N - 1, S / 2, S / 2 - 1, S / 2);
+            }
+        } else {
+            if (R % 2 == 0) {
+                left = divdeAndMergePrinter(N - 1, R / 2, R / 2, R / 2 + 1);
+                right = divdeAndMergePrinter(N - 1, R / 2, R / 2 + 1, R / 2);
+            } else if (P % 2 == 0) {
+                left = divdeAndMergePrinter(N - 1, P / 2  + 1 , P / 2, P / 2);
+                right = divdeAndMergePrinter(N - 1, P / 2, P / 2, P / 2 + 1);
+            } else {
+                left = divdeAndMergePrinter(N - 1, S / 2 + 1 , S / 2, S / 2);
+                right = divdeAndMergePrinter(N - 1, S / 2, S / 2 + 1, S / 2);
+            }
+        }
+
+        return compareMerge(left, right);
     }
 
     private int calPower(int K, int C) {
@@ -43,6 +100,23 @@ public class Main implements Runnable {
             result *= K;
         }
         return result;
+    }
+
+    private boolean isPossible(int odd, int even, int R, int P, int S) {
+        if ((R == odd && P == odd && S == even) ||
+                (R == odd && P == even && S == odd) ||
+                (R == even && P == odd && S == odd)){
+            return true;
+        }
+        return false;
+    }
+
+    private String compareMerge(String left, String right) {
+        if (left.compareTo(right) > 0) {
+            return right + left;
+        } else {
+            return left + right;
+        }
     }
 
     //////////////////////////////////////////
